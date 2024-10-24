@@ -1,0 +1,107 @@
+import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Stars, Waves, Crown } from 'lucide-react';
+
+const NameGenerator = () => {
+  const [nameType, setNameType] = useState('fantasy');
+  const [generatedName, setGeneratedName] = useState('');
+
+  const firstNames = {
+    fantasy: ['Aether', 'Lyra', 'Thor', 'Luna', 'Zephyr', 'Nova', 'Atlas', 'Iris', 'Phoenix', 'Sage'],
+    scifi: ['Axion', 'Nova', 'Zero', 'Binary', 'Quantum', 'Vector', 'Nexus', 'Matrix', 'Cyber', 'Tesla'],
+    medieval: ['William', 'Eleanor', 'Arthur', 'Margaret', 'Edmund', 'Catherine', 'Richard', 'Isabella', 'Henry', 'Anne']
+  };
+
+  const lastNames = {
+    fantasy: ['Starweaver', 'Moonshadow', 'Stormwind', 'Flameheart', 'Nightwhisper', 'Dawnwalker', 'Frostweave', 'Sunseeker', 'Dreamweaver', 'Shadowmend'],
+    scifi: ['Algorithm', 'Protocol', 'Circuit', 'Interface', 'Binary', 'Codex', 'Matrix', 'Vector', 'Protocol', 'Cipher'],
+    medieval: ['Blackwood', 'Ironsmith', 'Wellington', 'Lancaster', 'Thorne', 'Sheffield', 'Winchester', 'Sterling', 'Montgomery', 'Crawford']
+  };
+
+  const backgrounds = {
+    fantasy: 'bg-gradient-to-br from-purple-500 to-blue-600',
+    scifi: 'bg-gradient-to-br from-cyan-500 to-blue-900',
+    medieval: 'bg-gradient-to-br from-amber-700 to-red-900'
+  };
+
+  const generateName = () => {
+    const firstName = firstNames[nameType][Math.floor(Math.random() * firstNames[nameType].length)];
+    const lastName = lastNames[nameType][Math.floor(Math.random() * lastNames[nameType].length)];
+    setGeneratedName(`${firstName} ${lastName}`);
+  };
+
+  const BackgroundIcon = () => {
+    switch (nameType) {
+      case 'fantasy':
+        return <Stars className="text-purple-200 animate-pulse" size={24} />;
+      case 'scifi':
+        return <Waves className="text-cyan-200 animate-pulse" size={24} />;
+      case 'medieval':
+        return <Crown className="text-amber-200 animate-pulse" size={24} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className={`p-8 min-h-[400px] ${backgrounds[nameType]} transition-colors duration-500`}>
+      <div className="absolute inset-0 opacity-20">
+        {[...Array(12)].map((_, i) => (
+          <div key={i} className="absolute" style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            transform: `rotate(${Math.random() * 360}deg)`
+          }}>
+            <BackgroundIcon />
+          </div>
+        ))}
+      </div>
+      
+      <Card className="w-full max-w-md mx-auto bg-white/90 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-center flex items-center justify-center gap-2">
+            <BackgroundIcon />
+            Name Generator
+            <BackgroundIcon />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Select Name Type:</label>
+            <Select value={nameType} onValueChange={setNameType}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fantasy">Fantasy</SelectItem>
+                <SelectItem value="scifi">Sci-Fi</SelectItem>
+                <SelectItem value="medieval">Medieval</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <Button 
+            onClick={generateName}
+            className={`w-full ${
+              nameType === 'fantasy' ? 'bg-purple-600 hover:bg-purple-700' :
+              nameType === 'scifi' ? 'bg-cyan-600 hover:bg-cyan-700' :
+              'bg-amber-800 hover:bg-amber-900'
+            }`}
+          >
+            Generate Name
+          </Button>
+
+          {generatedName && (
+            <div className="mt-4 p-4 bg-white/50 backdrop-blur rounded-lg">
+              <p className="text-center text-lg font-medium">{generatedName}</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default NameGenerator;
